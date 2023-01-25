@@ -1,0 +1,27 @@
+{
+  "name": "phonebook",
+  "version": "0.0.1",
+  "description": "phonebook exercise as part of fullstack course",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "\"echo \\\"Error: no test specified\\\" && exit 1\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/laserfrog/part3fullstack.git"
+  },
+  "author": "Leo Wichtowski",
+  "license": "UNLICENSED",
+  "bugs": {
+    "url": "https://github.com/laserfrog/part3fullstack/issues"
+  },
+  "homepage": "https://github.com/laserfrog/part3fullstack#readme",
+  "dependencies": {
+    "express": "^4.18.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  }
+}
