@@ -2,9 +2,11 @@ const { request } = require('express')
 const express = require('express')
 const morgan = require('morgan')
 const app = express()
+const cors = require('cors')
 
-app.use(express.json(), morgan(':method :url :status :response-time :user-type'))
-// app.use(morgan)
+app.use(express.json(), morgan('tiny'))
+app.use(cors())
+app.use(express.static('build'))
 
 let phoneNumbers = [
     {
@@ -30,7 +32,7 @@ let phoneNumbers = [
 ]
 
 app.get('/', (request, response) => {
-    response.send('<h1>Hi there</h1>')
+    response.send('pies')
     // morgan.token('host', function (req, res) {
     //     return req.hostname;
     // });
@@ -89,7 +91,7 @@ app.post('/api/persons', (request, response) => {
     phoneNumbers = phoneNumbers.concat(newNumber)
     response.json(newNumber)
 
-    morgan.token('user-type', function (req, res) { return JSON.stringify(newNumber) })
+    // morgan.token('user-type', function (req, res) { return JSON.stringify(newNumber) })
 
 })
 
@@ -97,6 +99,7 @@ app.get('/info', (request, response) => {
     response.send(`Phone book has info for ${phoneNumbers.length} people <br> ${new Date()}`)
 })
 
-const PORT = 3001
-app.listen(PORT)
-console.log(`Server running on port ${PORT} at http://localhost:${PORT}`)
+const PORT = process.env.PORT || 3001
+app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT} at http://localhost:${PORT}`)
+})
