@@ -1,4 +1,4 @@
-const { request } = require('express')
+// const { request } = require('express')
 require('dotenv').config()
 const express = require('express')
 const morgan = require('morgan')
@@ -19,28 +19,6 @@ app.use(cors())
 app.use(requestLogger)
 app.use(express.static('build'))
 
-let phoneNumbers = [
-    {
-        "id": 1,
-        "name": "Arto Hellas",
-        "number": "040-123456"
-    },
-    {
-        "id": 2,
-        "name": "Ada Lovelace",
-        "number": "39-44-5323523"
-    },
-    {
-        "id": 3,
-        "name": "Dan Abramov",
-        "number": "12-43-234345"
-    },
-    {
-        "id": 4,
-        "name": "Mary Poppendieck",
-        "number": "39-23-6423122"
-    }
-]
 
 app.get('/', (request, response) => {
     response.send('pies')
@@ -73,6 +51,7 @@ app.get('/api/persons/:id', (request, response, next) => {
 
 app.delete('/api/persons/:id', (request, response, next) => {
     Person.findByIdAndRemove(request.params.id)
+        // eslint-disable-next-line no-unused-vars
         .then(result => {
             response.status(204).end()
         })
@@ -95,36 +74,38 @@ app.put('/api/persons/:id', (request, response, next) => {
         .catch(error => next(error))
 })
 
-const generateId = () => {
-    const maxId = phoneNumbers.length > 0
-        ? Math.max(...phoneNumbers.map(n => n.id))
-        : 0
-    return maxId + 1
-}
+// const generateId = () => {
+//     const maxId = phoneNumbers.length > 0
+//         ? Math.max(...phoneNumbers.map(n => n.id))
+//         : 0
+//     return maxId + 1
+// }
 
-app.post('/api/persons', (request, response) => {
+app.post('/api/persons', (request, response, next) => {
     const body = request.body
 
-    if (!body.name || !body.number) {
-        return response.status(400).json({
-            error: 'content missing'
-        })
-    }
+    // if (!body.name || !body.number) {
+    //     return response.status(400).json({
+    //         error: 'content missing'
+    //     })
+    // }
 
-    if (phoneNumbers.find(number => number.name === body.name)) {
-        return response.status(400).json({
-            error: 'name already in there'
-        })
-    }
+    // if (phoneNumbers.find(number => number.name === body.name)) {
+    //     return response.status(400).json({
+    //         error: 'name already in there'
+    //     })
+    // }
 
     const person = new Person({
         name: body.name,
         number: body.number,
     })
 
-    person.save().then(savedPerson => {
-        response.json(savedPerson)
-    })
+    person.save()
+        .then(savedPerson => {
+            response.json(savedPerson)
+        })
+        .catch(error => next(error))
 
     // morgan.token('user-type', function (req, res) { return JSON.stringify(newNumber) })
 
@@ -143,12 +124,16 @@ const errorHandler = (error, request, response, next) => {
     if (error.name === 'CastError') {
         return response.status(400).send({ error: 'malformed id' })
     }
+    if (error.name === 'ValidationError') {
+        return response.status(400).send(error.message)
+    }
 
     next(error)
 }
 
 app.use(errorHandler)
 
+// eslint-disable-next-line no-undef
 const PORT = process.env.PORT
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT} at http://localhost:${PORT}`)
